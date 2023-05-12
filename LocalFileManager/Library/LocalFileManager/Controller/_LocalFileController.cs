@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Rugal.Net.LocalFileManager.Extention;
+using Rugal.Net.LocalFileManager.Model;
 using Rugal.Net.LocalFileManager.Service;
 
 namespace Rugal.Net.LocalFileManager.Controller
@@ -13,7 +13,7 @@ namespace Rugal.Net.LocalFileManager.Controller
         {
             LocalFileService = _LocalFileService;
         }
-
+         
         [HttpGet]
         public dynamic GetFileList()
         {

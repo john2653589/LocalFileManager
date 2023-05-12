@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "google/protobuf/any.proto";
+//import "google/protobuf/timestamp.proto";
+//import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Rugal.LocalFileSync.Grpc";
+package LocalFile;
+
+service SyncServer{
+	rpc SyncTrade(stream google.protobuf.Any) returns (stream google.protobuf.Any);
+	rpc SyncToServer(stream google.protobuf.Any) returns (stream google.protobuf.Any);
+	rpc SyncFromServer(stream google.protobuf.Any) returns (stream google.protobuf.Any);
+}

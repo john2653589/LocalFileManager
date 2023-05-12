@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Rugal.Net.LocalFileManager.Extention;
 using Rugal.Net.LocalFileManager.Model;
 using Rugal.Net.DynamicSetter.Extention;
 
@@ -86,6 +85,24 @@ namespace Rugal.Net.LocalFileManager.Service
             var Ret = RCS_GetFileList(Setting.RootPath);
             return Ret;
         }
+        public virtual IEnumerable<LocalFileInfoModel> ForEachFile(SyncDirectoryModel FileList = null)
+        {
+            FileList ??= GetFileList();
+            if (FileList.Files.Any())
+            {
+                foreach (var File in FileList.Files)
+                {
+                    yield return File;
+                }
+            }
+            foreach (var Dir in FileList.Directories)
+            {
+                foreach (var File in ForEachFile(Dir))
+                {
+                    yield return File;
+                }
+            }
+        }
         private SyncDirectoryModel RCS_GetFileList(string FindPath)
         {
             FindPath = FindPath?.Replace(@"\", "/");
@@ -101,13 +118,13 @@ namespace Rugal.Net.LocalFileManager.Service
             var FindDirectory = new DirectoryInfo(FullPath);
             var GetFiles = FindDirectory
                 .GetFiles()
-                .Select(Item => new SyncFileModel()
+                .Select(Item => new LocalFileInfoModel()
                 {
                     FileName = Item.Name,
                     Path = SetPath,
                     FullPath = FullPath,
-                })
-                .ToList();
+                    Length = Item.Length,
+                });
 
             var GetDirectories = FindDirectory
                 .GetDirectories()
@@ -119,8 +136,7 @@ namespace Rugal.Net.LocalFileManager.Service
 
                     var NextModel = RCS_GetFileList(NextPath);
                     return NextModel;
-                })
-                .ToList();
+                });
 
             var Model = new SyncDirectoryModel()
             {
@@ -129,14 +145,13 @@ namespace Rugal.Net.LocalFileManager.Service
                 Files = GetFiles,
                 Directories = GetDirectories,
             };
-
             return Model;
         }
 
-        public virtual void CompareFileList(SyncDirectoryModel MainModel, SyncDirectoryModel TargetModel, Action<SyncFileModel> NotExistFunc)
+        public virtual void CompareFileList(SyncDirectoryModel MainModel, SyncDirectoryModel TargetModel, Action<LocalFileInfoModel> NotExistFunc)
               => RCS_CompareFileList(MainModel, TargetModel, NotExistFunc);
 
-        private void RCS_CompareFileList(SyncDirectoryModel MainModel, SyncDirectoryModel TargetModel, Action<SyncFileModel> NotExistFunc)
+        private void RCS_CompareFileList(SyncDirectoryModel MainModel, SyncDirectoryModel TargetModel, Action<LocalFileInfoModel> NotExistFunc)
         {
             foreach (var File in MainModel.Files)
             {
@@ -225,16 +240,19 @@ namespace Rugal.Net.LocalFileManager.Service
         }
         #endregion
 
-        #region Using File
-        public virtual FileWriterService UsingFile(string DirectoryName, object FileName)
+        #region Combine Path
+        public virtual string CombinePaths(params string[] Paths)
         {
-            if (FileName is null)
-                return null;
-
-            var FullFileName = CombineFullName(FileName, out _, DirectoryName);
-            var Writer = new FileWriterService(FullFileName);
-            return Writer;
+            var FullFileName = CombineFullPath(Paths);
+            return FullFileName;
         }
+        public virtual string CombinePaths(LocalFileInfoModel Model)
+        {
+            var FullFileName = CombineFullPath(Model.Path, Model.FileName);
+            return FullFileName;
+        }
+        #endregion
+
         #endregion
 
         #region Internal Function
@@ -288,8 +306,7 @@ namespace Rugal.Net.LocalFileManager.Service
             var FullFileName = Path.Combine(ClearPaths.ToArray());
             return FullFileName;
         }
-
-        internal virtual string CombinePaths(params string[] Paths)
+        private string CombineFullPath(params string[] Paths)
         {
             var AllPaths = new[]
             {
@@ -300,7 +317,6 @@ namespace Rugal.Net.LocalFileManager.Service
             var FullPath = Path.Combine(AllPaths.ToArray()).Replace(@"\", "/");
             return FullPath;
         }
-
         internal virtual string ConvertFileName(object FileName)
         {
             if (FileName is null)

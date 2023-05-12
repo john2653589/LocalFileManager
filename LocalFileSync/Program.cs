@@ -1,3 +1,4 @@
+using Rugal.LocalFileSync.Extention;
 using Rugal.Net.LocalFileManager.Extention;
 using Rugal.NetCommon.Extention.Startup;
 
@@ -18,9 +19,10 @@ builder.Services.AddCommonInputOptions();
 
 #region Add LocalFile
 builder.Services.AddLocalFile(builder.Configuration);
+builder.Host.AddLocalFileSyncService();
 #endregion
 
-#endregion 
+#endregion
 
 var app = builder.Build();
 

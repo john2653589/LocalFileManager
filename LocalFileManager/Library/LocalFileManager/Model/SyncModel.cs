@@ -1,11 +1,11 @@
-﻿namespace Rugal.Net.LocalFileManager.Extention
+﻿namespace Rugal.Net.LocalFileManager.Model
 {
     public class SyncDirectoryModel
     {
         public string Path { get; set; }
         public string FullPath { get; set; }
-        public List<SyncFileModel> Files { get; set; }
-        public List<SyncDirectoryModel> Directories { get; set; }
+        public IEnumerable<LocalFileInfoModel> Files { get; set; }
+        public IEnumerable<SyncDirectoryModel> Directories { get; set; }
 
         internal bool TryGetDirectory(string FindPath, out SyncDirectoryModel OutDirectory)
         {
@@ -48,11 +48,12 @@
             return IsExist;
         }
     }
-    public class SyncFileModel
+    public class LocalFileInfoModel
     {
         public string FileName { get; set; }
         public string Path { get; set; }
         public string FullPath { get; set; }
+        public long Length { get; set; }
     }
     public class GetFileModel
     {

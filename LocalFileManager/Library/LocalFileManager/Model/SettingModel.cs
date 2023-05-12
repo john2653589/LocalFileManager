@@ -9,6 +9,9 @@
             set => FormatRootPath = value;
         }
         public string RemoteDomain { get; set; }
+        public TimeSpan? SyncPerMin { get; set; }
+        public long SyncToPerByte { get; set; } = 1024 * 1024;
+        public long SyncFromPerByte { get; set; } = 1024 * 1024;
         public Dictionary<string, object> Paths { get; set; }
         public void AddPath(string Key, object Path)
         {

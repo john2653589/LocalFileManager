@@ -90,10 +90,12 @@ namespace Rugal.Net.LocalFileManager.Extention
         private static LocalFileManagerSetting NewSetting(IConfiguration Configuration, string ConfigurationKey)
         {
             var GetSetting = Configuration.GetSection(ConfigurationKey);
+            var Spm = GetSetting.GetValue<string>("Spm");
             var Setting = new LocalFileManagerSetting()
             {
                 RootPath = GetSetting.GetValue<string>("RootPath"),
                 RemoteDomain = GetSetting.GetValue<string>("RemoteDomain"),
+                SyncPerMin = Spm == null ? null : TimeSpan.FromMinutes(int.Parse(Spm)),
             };
             return Setting;
         }
