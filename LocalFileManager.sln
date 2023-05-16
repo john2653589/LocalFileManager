@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalFileManager", "LocalFi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalFileSync", "LocalFileSync\LocalFileSync.csproj", "{F3E20AB8-DE58-41F8-9766-49FCF2A5815A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGrpc", "TestGrpc\TestGrpc.csproj", "{70689B6D-1BDF-4638-8999-1E0D483EE374}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{AA442CDB-3D74-4904-A3B6-F72183235645}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{F3E20AB8-DE58-41F8-9766-49FCF2A5815A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3E20AB8-DE58-41F8-9766-49FCF2A5815A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3E20AB8-DE58-41F8-9766-49FCF2A5815A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70689B6D-1BDF-4638-8999-1E0D483EE374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70689B6D-1BDF-4638-8999-1E0D483EE374}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70689B6D-1BDF-4638-8999-1E0D483EE374}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70689B6D-1BDF-4638-8999-1E0D483EE374}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AA442CDB-3D74-4904-A3B6-F72183235645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AA442CDB-3D74-4904-A3B6-F72183235645}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA442CDB-3D74-4904-A3B6-F72183235645}.Release|Any CPU.ActiveCfg = Release|Any CPU
