@@ -17,7 +17,7 @@ namespace Rugal.LocalFileSync.Service
         }
         public async Task<SyncTradeResultModel> TrySyncSend(IAsyncStreamWriter<Any> Sender, IAsyncStreamReader<Any> Receiver)
         {
-            var FileList = LocalFileService.ForEachFile();
+            var FileList = LocalFileService.ForEachFiles();
             var ErrorCount = 0;
             var SuccessCount = 0;
             var FileCount = 0;

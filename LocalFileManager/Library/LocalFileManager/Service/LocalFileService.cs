@@ -85,7 +85,7 @@ namespace Rugal.Net.LocalFileManager.Service
             var Ret = RCS_GetFileList(Setting.RootPath);
             return Ret;
         }
-        public virtual IEnumerable<LocalFileInfoModel> ForEachFile(SyncDirectoryModel FileList = null)
+        public virtual IEnumerable<LocalFileInfoModel> ForEachFiles(SyncDirectoryModel FileList = null)
         {
             FileList ??= GetFileList();
             if (FileList.Files.Any())
@@ -97,7 +97,7 @@ namespace Rugal.Net.LocalFileManager.Service
             }
             foreach (var Dir in FileList.Directories)
             {
-                foreach (var File in ForEachFile(Dir))
+                foreach (var File in ForEachFiles(Dir))
                 {
                     yield return File;
                 }

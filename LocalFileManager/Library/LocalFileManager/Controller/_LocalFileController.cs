@@ -13,7 +13,7 @@ namespace Rugal.Net.LocalFileManager.Controller
         {
             LocalFileService = _LocalFileService;
         }
-         
+
         [HttpGet]
         public dynamic GetFileList()
         {
@@ -123,5 +123,15 @@ namespace Rugal.Net.LocalFileManager.Controller
             AllFiles.TryGetDirectory(Path, out var Model);
             return Model;
         }
+
+        [HttpGet]
+        public dynamic ForEachFileList()
+        {
+            var Files = LocalFileService
+                .ForEachFiles()
+                .ToArray();
+            return Files;
+        }
+
     }
 }

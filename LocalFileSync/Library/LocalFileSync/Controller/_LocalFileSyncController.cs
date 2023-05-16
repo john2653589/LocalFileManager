@@ -10,10 +10,8 @@ namespace Rugal.LocalFileSync.Controller
     public class _LocalFileSyncController : ControllerBase
     {
         private readonly LocalFileSyncClient SyncClient;
-        private readonly LocalFileService LocalFileService;
-        public _LocalFileSyncController(LocalFileService _LocalFileService, LocalFileSyncClient _SyncClient)
+        public _LocalFileSyncController(LocalFileSyncClient _SyncClient)
         {
-            LocalFileService = _LocalFileService;
             SyncClient = _SyncClient;
         }
 
