@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "LocalFileSync": {
+    "TestGrpc": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -8,8 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:8000;http://localhost:8001"
-      //"applicationUrl": "https://localhost:8002;http://localhost:8003"
+      "applicationUrl": "https://localhost:7000;http://localhost:7001"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -25,16 +24,6 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
       "useSSL": true
-    },
-    "WSL": {
-      "commandName": "WSL2",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:7000/swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7000;http://localhost:7001"
-      },
-      "distributionName": ""
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
@@ -42,8 +31,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:23876",
-      "sslPort": 44324
+      "applicationUrl": "http://localhost:61743",
+      "sslPort": 44333
     }
-  } 
+  }
 }

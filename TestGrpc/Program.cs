@@ -24,10 +24,7 @@ builder.Services.LocalFileSyncClient();
 #endregion
 
 #endregion
-
 var app = builder.Build();
-
-app.MapLocalFileSyncServer();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

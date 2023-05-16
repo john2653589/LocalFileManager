@@ -44,10 +44,8 @@ namespace Rugal.Net.LocalFileManager.Service
         public LocalFileWriter WithRemoveTemp()
         {
             var ReFileName = Regex.Replace(LocalInfo.FileName, ".tmp$", "");
-            LocalInfo.FileName = ReFileName;
-            var ReFullFileName = LocalFileService.CombinePaths(LocalInfo);
             ClearStream();
-            ReName(ReFullFileName);
+            ReName(ReFileName);
             return this;
         }
         public bool IsHasTemp(out long OutLength)
@@ -85,6 +83,9 @@ namespace Rugal.Net.LocalFileManager.Service
         {
             if (Stream != null)
                 ClearStream();
+
+            if (!Info.Directory.Exists)
+                Info.Directory.Create();
 
             Stream = Info.OpenWrite();
             if (SeekLength > 0)
@@ -183,10 +184,11 @@ namespace Rugal.Net.LocalFileManager.Service
             Stream?.Flush();
             Stream?.Close();
             Stream?.Dispose();
+            Stream = null;
         }
         public void Dispose()
         {
-            Stream.Dispose();
+            ClearStream();
             GC.SuppressFinalize(this);
         }
     }

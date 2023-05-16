@@ -6,23 +6,24 @@ namespace Rugal.LocalFileSync.Service
 {
     public class LocalFileSyncWorker : BackgroundService
     {
-        private readonly LocalFileService LocalFileService;
-        private LocalFileManagerSetting Setting => LocalFileService.Setting;
-        public LocalFileSyncWorker(LocalFileService _LocalFileService)
-        {
-            LocalFileService = _LocalFileService;
-        }
+        //private readonly LocalFileService LocalFileService;
+        ////private LocalFileManagerSetting Setting => LocalFileService.Setting;
+        //public LocalFileSyncWorker(LocalFileService _LocalFileService)
+        //{
+        //    LocalFileService = _LocalFileService;
+        //}
+        public LocalFileSyncWorker() { }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if (Setting.SyncPerMin == null)
-                return;
+            //if (Setting.SyncPerMin == null)
+            return;
 
-            while (!stoppingToken.IsCancellationRequested)
-            {
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
 
 
-                await Task.Delay(Setting.SyncPerMin.Value, stoppingToken);
-            }
+            //    await Task.Delay(Setting.SyncPerMin.Value, stoppingToken);
+            //}
         }
     }
 }
