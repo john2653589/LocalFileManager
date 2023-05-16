@@ -19,13 +19,13 @@ namespace Rugal.LocalFileSync.Grpc
 
         public override async Task SyncFromServer(IAsyncStreamReader<Any> requestStream, IServerStreamWriter<Any> responseStream, ServerCallContext context)
         {
-            await SyncTradeService.TrySyncSend(responseStream, requestStream);
+            await SyncTradeService.TrySend(responseStream, requestStream);
         }
 
         public override async Task SyncTrade(IAsyncStreamReader<Any> requestStream, IServerStreamWriter<Any> responseStream, ServerCallContext context)
         {
             await SyncTradeService.TryReceive(responseStream, requestStream);
-            await SyncTradeService.TrySyncSend(responseStream, requestStream);
+            await SyncTradeService.TrySend(responseStream, requestStream);
         }
     }
 }

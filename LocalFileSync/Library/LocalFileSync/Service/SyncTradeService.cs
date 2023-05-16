@@ -15,7 +15,7 @@ namespace Rugal.LocalFileSync.Service
         {
             LocalFileService = _LocalFileService;
         }
-        public async Task<SyncTradeResultModel> TrySyncSend(IAsyncStreamWriter<Any> Sender, IAsyncStreamReader<Any> Receiver)
+        public async Task<SyncTradeResultModel> TrySend(IAsyncStreamWriter<Any> Sender, IAsyncStreamReader<Any> Receiver)
         {
             var FileList = LocalFileService.ForEachFiles();
             var ErrorCount = 0;
@@ -102,10 +102,17 @@ namespace Rugal.LocalFileSync.Service
                     }
                 }
             }
-            await TryWriteTrade(Sender, new SyncTradeModel()
+            try
             {
-                TradeType = SyncTradeType.Complete,
-            });
+                await TryWriteTrade(Sender, new SyncTradeModel()
+                {
+                    TradeType = SyncTradeType.Complete,
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
             var Result = new SyncTradeResultModel()
             {

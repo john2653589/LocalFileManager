@@ -30,7 +30,7 @@ namespace Rugal.LocalFileSync.Grpc
             var Receiver = Server.ResponseStream;
             var Sender = Server.RequestStream;
 
-            var SuccessCount = await SyncTradeService.TrySyncSend(Sender, Receiver);
+            var SuccessCount = await SyncTradeService.TrySend(Sender, Receiver);
             await Sender.CompleteAsync();
             return SuccessCount;
         }
@@ -50,7 +50,7 @@ namespace Rugal.LocalFileSync.Grpc
             var Receiver = Server.ResponseStream;
             var Sender = Server.RequestStream;
 
-            var SendResult = await SyncTradeService.TrySyncSend(Sender, Receiver);
+            var SendResult = await SyncTradeService.TrySend(Sender, Receiver);
             var ReceiveResult = await SyncTradeService.TryReceive(Sender, Receiver);
 
             await Sender.CompleteAsync();
