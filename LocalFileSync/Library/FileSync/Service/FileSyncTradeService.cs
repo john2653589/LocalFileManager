@@ -1,17 +1,17 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Rugal.GrpcCommon.Extention;
-using Rugal.LocalFileSync.Model;
+using Rugal.FileSync.Model;
 using Rugal.Net.LocalFileManager.Model;
 using Rugal.Net.LocalFileManager.Service;
 
-namespace Rugal.LocalFileSync.Service
+namespace Rugal.FileSync.Service
 {
-    public class SyncTradeService
+    public class FileSyncTradeService
     {
         private readonly LocalFileService LocalFileService;
         private LocalFileManagerSetting Setting => LocalFileService.Setting;
-        public SyncTradeService(LocalFileService _LocalFileService)
+        public FileSyncTradeService(LocalFileService _LocalFileService)
         {
             LocalFileService = _LocalFileService;
         }

@@ -1,10 +1,10 @@
 syntax = "proto3";
 import "google/protobuf/any.proto";
 
-option csharp_namespace = "Rugal.LocalFileSync.Grpc";
+option csharp_namespace = "Rugal.FileSync.Grpc";
 package LocalFile;
 
-service SyncServer{
+service FileSync{
 	rpc SyncTrade(stream google.protobuf.Any) returns (stream google.protobuf.Any);
 	rpc SyncToServer(stream google.protobuf.Any) returns (stream google.protobuf.Any);
 	rpc SyncFromServer(stream google.protobuf.Any) returns (stream google.protobuf.Any);

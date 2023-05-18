@@ -1,6 +1,6 @@
 ﻿using Rugal.Net.LocalFileManager.Model;
 
-namespace Rugal.LocalFileSync.Model
+namespace Rugal.FileSync.Model
 {
     public class SyncTradeModel
     {

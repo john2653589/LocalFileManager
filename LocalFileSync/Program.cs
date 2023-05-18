@@ -1,4 +1,4 @@
-using Rugal.LocalFileSync.Extention;
+using Rugal.FileSync.Extention;
 using Rugal.Net.LocalFileManager.Extention;
 using Rugal.NetCommon.Extention.Startup;
 

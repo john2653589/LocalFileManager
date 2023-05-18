@@ -1,9 +1,8 @@
-﻿using Rugal.LocalFileSync.Grpc;
-using Rugal.LocalFileSync.Service;
-using Rugal.Net.LocalFileManager.Service;
+﻿using Rugal.FileSync.Grpc;
+using Rugal.FileSync.Service;
 using System.Runtime.InteropServices;
 
-namespace Rugal.LocalFileSync.Extention
+namespace Rugal.FileSync.Extention
 {
     public static class StartupExtention
     {
@@ -17,34 +16,34 @@ namespace Rugal.LocalFileSync.Extention
             if (IsWindows)
                 Host.UseWindowsService(options =>
                 {
-                    options.ServiceName = "LocalFileSync Service";
+                    options.ServiceName = "FileSync Service";
                 });
             else if (IsLinux)
                 Host.UseSystemd();
 
             Host.ConfigureServices(Services =>
             {
-                Services.AddHostedService<LocalFileSyncWorker>();
+                Services.AddHostedService<FileSyncWorker>();
             });
         }
 
         public static IServiceCollection AddLocalFileSyncTrade(this IServiceCollection Services)
         {
-            Services.AddSingleton<SyncTradeService>();
+            Services.AddSingleton<FileSyncTradeService>();
             return Services;
         }
         public static IServiceCollection LocalFileSyncClient(this IServiceCollection Services)
         {
             AddLocalFileSyncTrade(Services);
             Services.AddGrpc();
-            Services.AddSingleton<LocalFileSyncClient>();
+            Services.AddSingleton<FileSyncClient>();
             return Services;
         }
 
 
         public static GrpcServiceEndpointConventionBuilder MapLocalFileSyncServer(this WebApplication App)
         {
-            var Builder = App.MapGrpcService<LocalFileSyncServer>();
+            var Builder = App.MapGrpcService<FileSyncServer>();
             return Builder;
         }
     }

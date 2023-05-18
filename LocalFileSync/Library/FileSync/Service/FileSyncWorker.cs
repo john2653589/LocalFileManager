@@ -1,21 +1,20 @@
-﻿
-using Rugal.LocalFileSync.Grpc;
+﻿using Rugal.FileSync.Grpc;
 using Rugal.Net.LocalFileManager.Model;
 using Rugal.Net.LocalFileManager.Service;
 
-namespace Rugal.LocalFileSync.Service
+namespace Rugal.FileSync.Service
 {
-    public class LocalFileSyncWorker : BackgroundService
+    public class FileSyncWorker : BackgroundService
     {
         private LocalFileManagerSetting Setting => LocalFileService.Setting;
         private readonly LocalFileService LocalFileService;
-        private readonly LocalFileSyncClient SyncClient;
-        public LocalFileSyncWorker(LocalFileService _LocalFileService, LocalFileSyncClient _SyncClient)
+        private readonly FileSyncClient SyncClient;
+        public FileSyncWorker(LocalFileService _LocalFileService, FileSyncClient _SyncClient)
         {
             LocalFileService = _LocalFileService;
             SyncClient = _SyncClient;
         }
-        public LocalFileSyncWorker() { }
+        public FileSyncWorker() { }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             if (Setting.SyncPerMin == null)

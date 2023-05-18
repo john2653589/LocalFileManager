@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Rugal.LocalFileSync.Grpc;
-using Rugal.LocalFileSync.Model;
-using Rugal.Net.LocalFileManager.Service;
+using Rugal.FileSync.Grpc;
+using Rugal.FileSync.Model;
 
-namespace Rugal.LocalFileSync.Controller
+namespace Rugal.FileSync.Controller
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class _LocalFileSyncController : ControllerBase
+    public class _FileSyncController : ControllerBase
     {
-        private readonly LocalFileSyncClient SyncClient;
-        public _LocalFileSyncController(LocalFileSyncClient _SyncClient)
+        private readonly FileSyncClient SyncClient;
+        public _FileSyncController(FileSyncClient _SyncClient)
         {
             SyncClient = _SyncClient;
         }

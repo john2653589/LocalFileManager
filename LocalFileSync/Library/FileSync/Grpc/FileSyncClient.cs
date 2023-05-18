@@ -1,18 +1,18 @@
 ﻿using Grpc.Net.Client;
-using Rugal.LocalFileSync.Model;
-using Rugal.LocalFileSync.Service;
+using Rugal.FileSync.Model;
+using Rugal.FileSync.Service;
 using Rugal.Net.LocalFileManager.Model;
 using Rugal.Net.LocalFileManager.Service;
 
-namespace Rugal.LocalFileSync.Grpc
+namespace Rugal.FileSync.Grpc
 {
-    public class LocalFileSyncClient
+    public class FileSyncClient
     {
         private readonly LocalFileService LocalFileService;
-        private readonly SyncTradeService SyncTradeService;
+        private readonly FileSyncTradeService SyncTradeService;
         private LocalFileManagerSetting Setting => LocalFileService.Setting;
-        private SyncServer.SyncServerClient Client { get; set; }
-        public LocalFileSyncClient(LocalFileService _LocalFileService, SyncTradeService _SyncTradeService)
+        private FileSync.FileSyncClient Client { get; set; }
+        public FileSyncClient(LocalFileService _LocalFileService, FileSyncTradeService _SyncTradeService)
         {
             LocalFileService = _LocalFileService;
             SyncTradeService = _SyncTradeService;
@@ -21,7 +21,7 @@ namespace Rugal.LocalFileSync.Grpc
         public void CreateClient()
         {
             var GetChannel = GrpcChannel.ForAddress(Setting.RemoteDomain);
-            Client = new SyncServer.SyncServerClient(GetChannel);
+            Client = new FileSync.FileSyncClient(GetChannel);
         }
 
         public async Task<SyncTradeResultModel> TrySyncToServer()

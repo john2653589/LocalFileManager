@@ -1,15 +1,14 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Rugal.LocalFileSync.Model;
-using Rugal.LocalFileSync.Service;
-using System.Reflection;
+using Rugal.FileSync.Model;
+using Rugal.FileSync.Service;
 
-namespace Rugal.LocalFileSync.Grpc
+namespace Rugal.FileSync.Grpc
 {
-    public class LocalFileSyncServer : SyncServer.SyncServerBase
+    public class FileSyncServer : FileSync.FileSyncBase
     {
-        private readonly SyncTradeService SyncTradeService;
-        public LocalFileSyncServer(SyncTradeService _SyncTradeService)
+        private readonly FileSyncTradeService SyncTradeService;
+        public FileSyncServer(FileSyncTradeService _SyncTradeService)
         {
             SyncTradeService = _SyncTradeService;
         }
