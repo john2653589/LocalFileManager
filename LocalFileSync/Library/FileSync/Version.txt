@@ -1,5 +1,5 @@
-﻿LocalFileSync Library
-Version 1.0.1
+﻿FileSync Library
+Version 1.0.2
 From Rugal Tu
 
 Update 2023/05/19
