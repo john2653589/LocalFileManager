@@ -58,7 +58,7 @@ namespace Rugal.Net.LocalFileManager.Service
             if (FileName is null)
                 return Array.Empty<byte>();
 
-            var FullFileName = ConvertFullName(FileName, Paths);
+            var FullFileName = BaseCombineFullName(FileName, out _, Paths);
             if (!File.Exists(FullFileName))
                 return Array.Empty<byte>();
 
