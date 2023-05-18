@@ -44,7 +44,7 @@ namespace Rugal.Net.LocalFileManager.Controller
             LocalFileService.CompareFileList(LocalRoot, RemoteRoot, async File =>
             {
                 var UploadFileUrl = $"{BaseUrl}/UploadFile?Path={File.Path}&FileName={File.FileName}";
-                var GetBuffer = LocalFileService.ReadFile(File.Path, File.FileName);
+                var GetBuffer = LocalFileService.ReadFile(File.FileName, File.Path);
 
                 using var Ms = new MemoryStream(GetBuffer);
                 using var BufferContent = new StreamContent(Ms);
@@ -95,7 +95,7 @@ namespace Rugal.Net.LocalFileManager.Controller
         [HttpGet]
         public dynamic GetFile(string Path, string FileName)
         {
-            var FileBuffer = LocalFileService.ReadFile(Path, FileName);
+            var FileBuffer = LocalFileService.ReadFile(FileName, Path);
             var Ret = new GetFileModel()
             {
                 Buffer = FileBuffer,

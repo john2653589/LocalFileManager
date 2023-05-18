@@ -36,20 +36,20 @@ namespace Rugal.Net.LocalFileManager.Service
         #region File Read
         public virtual byte[] ReadFile<TData>(object FileName)
         {
-            var FileBuffer = ReadFile(typeof(TData), FileName);
+            var FileBuffer = ReadFile(FileName, typeof(TData));
             return FileBuffer;
         }
         public virtual byte[] ReadFile(Type DataType, object FileName)
         {
-            var FileBuffer = ReadFile(DataType.Name, FileName);
+            var FileBuffer = ReadFile(FileName, DataType.Name);
             return FileBuffer;
         }
-        public virtual byte[] ReadFile(string DirectoryName, object FileName)
+        public virtual byte[] ReadFile(object FileName, params object[] Paths)
         {
             if (FileName is null)
                 return Array.Empty<byte>();
 
-            var FullFileName = ConvertFullName(DirectoryName, FileName);
+            var FullFileName = ConvertFullName(FileName, Paths);
             var FileBuffer = ReadFile(FullFileName);
             return FileBuffer;
         }
