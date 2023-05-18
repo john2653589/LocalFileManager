@@ -36,43 +36,65 @@ namespace Rugal.Net.LocalFileManager.Service
         #region File Read
         public virtual byte[] ReadFile<TData>(object FileName, params object[] Paths)
         {
-            var FileBuffer = ReadFile(FileName, typeof(TData), Paths);
+            var FindPaths = Paths.ToList();
+            FindPaths.Add(typeof(TData).Name);
+            var FileBuffer = BaseReadFile(FileName, FindPaths);
             return FileBuffer;
         }
         public virtual byte[] ReadFile(Type DataType, object FileName, params object[] Paths)
         {
             var FindPaths = Paths.ToList();
-            FindPaths.Insert(0, DataType.Name);
-            var FileBuffer = ReadFile(FileName, FindPaths);
+            FindPaths.Add(DataType.Name);
+            var FileBuffer = BaseReadFile(FileName, FindPaths);
             return FileBuffer;
         }
         public virtual byte[] ReadFile(object FileName, params object[] Paths)
+        {
+            var FileBuffer = BaseReadFile(FileName, Paths);
+            return FileBuffer;
+        }
+        private byte[] BaseReadFile(object FileName, IEnumerable<object> Paths)
         {
             if (FileName is null)
                 return Array.Empty<byte>();
 
             var FullFileName = ConvertFullName(FileName, Paths);
-            var FileBuffer = ReadFile(FullFileName);
+            if (!File.Exists(FullFileName))
+                return Array.Empty<byte>();
+
+            var FileBuffer = File.ReadAllBytes(FullFileName);
             return FileBuffer;
         }
 
-        public virtual Task<byte[]> ReadFileAsync<TData>(object FileName)
+        public virtual Task<byte[]> ReadFileAsync<TData>(object FileName, params object[] Paths)
         {
-            var FileBuffer = ReadFileAsync(typeof(TData), FileName);
+            var FindPaths = Paths.ToList();
+            FindPaths.Add(typeof(TData).Name);
+            var FileBuffer = BaseReadFileAsync(FileName, FindPaths);
             return FileBuffer;
         }
-        public virtual Task<byte[]> ReadFileAsync(Type DataType, object FileName)
+        public virtual Task<byte[]> ReadFileAsync(Type DataType, object FileName, params object[] Paths)
         {
-            var FileBuffer = ReadFileAsync(DataType.Name, FileName);
+            var FindPaths = Paths.ToList();
+            FindPaths.Add(DataType.Name);
+            var FileBuffer = BaseReadFileAsync(FileName, FindPaths);
             return FileBuffer;
         }
-        public virtual Task<byte[]> ReadFileAsync(string DirectoryName, object FileName)
+        public virtual Task<byte[]> ReadFileAsync(object FileName, params object[] Paths)
+        {
+            var FileBuffer = BaseReadFileAsync(FileName, Paths);
+            return FileBuffer;
+        }
+        private Task<byte[]> BaseReadFileAsync(object FileName, IEnumerable<object> Paths)
         {
             if (FileName is null)
                 return Task.FromResult(Array.Empty<byte>());
 
-            var FullFileName = ConvertFullName(DirectoryName, FileName);
-            var FileBuffer = ReadFileAsync(FullFileName);
+            var FullFileName = ConvertFullName(FileName, Paths);
+            if (!File.Exists(FullFileName))
+                return Task.FromResult(Array.Empty<byte>());
+
+            var FileBuffer = File.ReadAllBytesAsync(FullFileName);
             return FileBuffer;
         }
         #endregion
@@ -263,56 +285,58 @@ namespace Rugal.Net.LocalFileManager.Service
         #region Internal Function
         internal virtual string ConvertFullName<TData>(object FileName)
         {
-            var FullFileName = ConvertFullName(typeof(TData), FileName);
+            var FullFileName = BaseCombineFullName(FileName, out _, new[] { typeof(TData).Name });
             return FullFileName;
         }
         internal virtual string ConvertFullName(Type DataType, object FileName)
         {
-            var FullFileName = ConvertFullName(DataType.Name, FileName);
+            var FullFileName = BaseCombineFullName(FileName, out _, new[] { DataType.Name });
             return FullFileName;
         }
-        internal virtual string ConvertFullName(string DirectoryName, object FileName)
+        internal virtual string ConvertFullName(object FileName, params object[] Paths)
         {
-            var FullFileName = CombineFullName(FileName, out _, new[] { DirectoryName });
-            return FullFileName;
-        }
-        internal virtual string ConvertFullName(object FileName, params object[] DirectoryNames)
-        {
-            var FullFileName = CombineFullName(FileName, out _, DirectoryNames);
+            var FullFileName = BaseCombineFullName(FileName, out _, Paths);
             return FullFileName;
         }
 
         internal virtual string CombineFullName<TData>(object FileName, out string SetFileName, params object[] Paths)
         {
-            var FullFileName = CombineFullName(typeof(TData), FileName, out SetFileName, Paths);
+            var FindPaths = Paths.ToList();
+            FindPaths.Add(typeof(TData).Name);
+            var FullFileName = BaseCombineFullName(FileName, out SetFileName, FindPaths);
             return FullFileName;
         }
         internal virtual string CombineFullName(Type DataType, object FileName, out string SetFileName, params object[] Paths)
         {
             var FindPaths = Paths.ToList();
-            FindPaths.Insert(0, DataType.Name);
-            var FullFileName = CombineFullName(FileName, out SetFileName, FindPaths.ToArray());
+            FindPaths.Add(DataType.Name);
+            var FullFileName = BaseCombineFullName(FileName, out SetFileName, FindPaths);
             return FullFileName;
         }
         internal virtual string CombineFullName(object FileName, out string SetFileName, object[] DirectoryNames)
         {
+            var FullFileName = BaseCombineFullName(FileName, out SetFileName, DirectoryNames);
+            return FullFileName;
+        }
+        private string BaseCombineFullName(object FileName, out string SetFileName, IEnumerable<object> Paths)
+        {
             SetFileName = ConvertFileName(FileName);
 
-            var ClearPaths = new[] { Setting.RootPath }
-                .ToList();
+            var ClearPaths = new[] { Setting.RootPath }.ToList();
 
-            var ClearDirectory = DirectoryNames?
-                .Select(Item => Item?.ToString().Replace(@"\", "/").TrimStart('/').TrimEnd('/').Split('/'))
+            var ConvertPaths = Paths?
+                .Select(Item => Item?.ToString().TrimStart('/').TrimEnd('/').Split('/'))
                 .Where(Item => Item is not null)
                 .SelectMany(Item => Item)
                 .ToList();
 
-            ClearPaths.AddRange(ClearDirectory);
+            ClearPaths.AddRange(ConvertPaths);
             ClearPaths.Add(SetFileName);
 
-            var FullFileName = Path.Combine(ClearPaths.ToArray());
+            var FullFileName = Path.Combine(ClearPaths.ToArray()).Replace(@"\", "/");
             return FullFileName;
         }
+
         private string CombineFullPath(params string[] Paths)
         {
             var AllPaths = new[]
@@ -347,6 +371,12 @@ namespace Rugal.Net.LocalFileManager.Service
             WriteFile(FullFileName, SaveBuffer);
             return SetFileName;
         }
+        private string BaseLocalSave(object FileName, byte[] SaveBuffer, params object[] Paths)
+        {
+            var FullFileName = CombineFullName(FileName, out var SetFileName, Paths);
+            WriteFile(FullFileName, SaveBuffer);
+            return SetFileName;
+        }
         private static void WriteFile(string FullFileName, byte[] WriteBuffer)
         {
             var Info = new FileInfo(FullFileName);
@@ -355,22 +385,7 @@ namespace Rugal.Net.LocalFileManager.Service
 
             File.WriteAllBytes(FullFileName, WriteBuffer);
         }
-        private static byte[] ReadFile(string FullFileName)
-        {
-            if (!File.Exists(FullFileName))
-                return Array.Empty<byte>();
 
-            var FileBuffer = File.ReadAllBytes(FullFileName);
-            return FileBuffer;
-        }
-        private static Task<byte[]> ReadFileAsync(string FullFileName)
-        {
-            if (!File.Exists(FullFileName))
-                return Task.FromResult(Array.Empty<byte>());
-
-            var FileBuffer = File.ReadAllBytesAsync(FullFileName);
-            return FileBuffer;
-        }
         #endregion
     }
 }
