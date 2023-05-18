@@ -24,7 +24,7 @@ namespace Rugal.FileSync.Grpc
             Client = new FileSync.FileSyncClient(GetChannel);
         }
 
-        public async Task<SyncTradeResultModel> TrySyncToServer()
+        public async Task<FileSyncTradeResultModel> TrySyncToServer()
         {
             var Server = Client.SyncToServer();
             var Receiver = Server.ResponseStream;
@@ -34,7 +34,7 @@ namespace Rugal.FileSync.Grpc
             await Sender.CompleteAsync();
             return SuccessCount;
         }
-        public async Task<SyncTradeResultModel> TrySyncFromServer()
+        public async Task<FileSyncTradeResultModel> TrySyncFromServer()
         {
             var Server = Client.SyncFromServer();
             var Response = Server.ResponseStream;
@@ -44,7 +44,7 @@ namespace Rugal.FileSync.Grpc
             await Rquest.CompleteAsync();
             return SuccessCount;
         }
-        public async Task<SyncTradeResultModel> TrySyncTrade()
+        public async Task<FileSyncTradeResultModel> TrySyncTrade()
         {
             var Server = Client.SyncTrade();
             var Receiver = Server.ResponseStream;
@@ -54,7 +54,7 @@ namespace Rugal.FileSync.Grpc
             var ReceiveResult = await SyncTradeService.TryReceive(Sender, Receiver);
 
             await Sender.CompleteAsync();
-            return new SyncTradeResultModel()
+            return new FileSyncTradeResultModel()
             {
                 SendCount = SendResult.SendCount,
                 SendCheckCount = SendResult.SendCheckCount,

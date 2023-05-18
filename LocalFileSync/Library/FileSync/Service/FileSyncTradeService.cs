@@ -15,7 +15,7 @@ namespace Rugal.FileSync.Service
         {
             LocalFileService = _LocalFileService;
         }
-        public async Task<SyncTradeResultModel> TrySend(IAsyncStreamWriter<Any> Sender, IAsyncStreamReader<Any> Receiver)
+        public async Task<FileSyncTradeResultModel> TrySend(IAsyncStreamWriter<Any> Sender, IAsyncStreamReader<Any> Receiver)
         {
             var FileList = LocalFileService.ForEachFiles();
             var ErrorCount = 0;
@@ -30,16 +30,16 @@ namespace Rugal.FileSync.Service
                     try
                     {
                         using var FileWriter = new LocalFileWriter(LocalFileService, File);
-                        await Sender.WriteAsync(new SyncTradeModel()
+                        await Sender.WriteAsync(new FileSyncTradeModel()
                         {
-                            TradeType = SyncTradeType.Info,
+                            TradeType = FileSyncTradeType.Info,
                             FileInfo = File,
                             Length = File.Length,
                         }.ConvertToAny());
                         await Receiver.MoveNext();
-                        var Model = Receiver.Current.ConvertBufferTo<SyncTradeModel>();
+                        var Model = Receiver.Current.ConvertBufferTo<FileSyncTradeModel>();
 
-                        if (Model.TradeType == SyncTradeType.Info)
+                        if (Model.TradeType == FileSyncTradeType.Info)
                         {
                             if (Model.Length == File.Length)
                             {
@@ -47,19 +47,19 @@ namespace Rugal.FileSync.Service
                                 continue;
                             }
 
-                            await Sender.WriteAsync(new SyncTradeModel()
+                            await Sender.WriteAsync(new FileSyncTradeModel()
                             {
-                                TradeType = SyncTradeType.Create,
+                                TradeType = FileSyncTradeType.Create,
                                 FileInfo = File,
                             }.ConvertToAny());
                         }
-                        else if (Model.TradeType == SyncTradeType.HasTemp)
+                        else if (Model.TradeType == FileSyncTradeType.HasTemp)
                         {
                             if (Model.Length == File.Length)
                             {
-                                await Sender.WriteAsync(new SyncTradeModel()
+                                await Sender.WriteAsync(new FileSyncTradeModel()
                                 {
-                                    TradeType = SyncTradeType.Pack,
+                                    TradeType = FileSyncTradeType.Pack,
                                     FileInfo = File,
                                 }.ConvertToAny());
                                 IsSyncSuccess = true;
@@ -72,9 +72,9 @@ namespace Rugal.FileSync.Service
 
                         await FileWriter.ReadBytesAsync(async Buffer =>
                         {
-                            await Sender.WriteAsync(new SyncTradeModel()
+                            await Sender.WriteAsync(new FileSyncTradeModel()
                             {
-                                TradeType = SyncTradeType.Buffer,
+                                TradeType = FileSyncTradeType.Buffer,
                                 Buffer = Buffer,
                                 FileInfo = File,
                                 Length = Buffer.Length,
@@ -83,9 +83,9 @@ namespace Rugal.FileSync.Service
                             return true;
                         }, Setting.SyncToPerByte);
 
-                        await Sender.WriteAsync(new SyncTradeModel()
+                        await Sender.WriteAsync(new FileSyncTradeModel()
                         {
-                            TradeType = SyncTradeType.Pack,
+                            TradeType = FileSyncTradeType.Pack,
                             FileInfo = File,
                         }.ConvertToAny());
                         Console.WriteLine($"Send file: 「{File.FileName}」 from 「{File.FullPath}」");
@@ -105,9 +105,9 @@ namespace Rugal.FileSync.Service
             }
             try
             {
-                await TryWriteTrade(Sender, new SyncTradeModel()
+                await TryWriteTrade(Sender, new FileSyncTradeModel()
                 {
-                    TradeType = SyncTradeType.Complete,
+                    TradeType = FileSyncTradeType.Complete,
                 });
             }
             catch (Exception ex)
@@ -115,14 +115,14 @@ namespace Rugal.FileSync.Service
                 Console.WriteLine(ex.ToString());
             }
 
-            var Result = new SyncTradeResultModel()
+            var Result = new FileSyncTradeResultModel()
             {
                 SendCount = SuccessCount,
                 SendCheckCount = FileCount,
             };
             return Result;
         }
-        public async Task<SyncTradeResultModel> TryReceive(IAsyncStreamWriter<Any> Receiver, IAsyncStreamReader<Any> Sender)
+        public async Task<FileSyncTradeResultModel> TryReceive(IAsyncStreamWriter<Any> Receiver, IAsyncStreamReader<Any> Sender)
         {
             var Writer = new LocalFileWriter(LocalFileService);
             var IsTrying = true;
@@ -137,25 +137,25 @@ namespace Rugal.FileSync.Service
                     if (!IsNext)
                         break;
 
-                    var Model = Sender.Current.ConvertBufferTo<SyncTradeModel>();
+                    var Model = Sender.Current.ConvertBufferTo<FileSyncTradeModel>();
                     switch (Model.TradeType)
                     {
-                        case SyncTradeType.Info:
+                        case FileSyncTradeType.Info:
                             FileCount++;
                             await TradeInfo(Writer, Model, Receiver);
                             break;
-                        case SyncTradeType.Create:
+                        case FileSyncTradeType.Create:
                             Writer.WithTemp();
                             break;
-                        case SyncTradeType.Buffer:
+                        case FileSyncTradeType.Buffer:
                             Writer.WriteBytes(Model.Buffer, Model.Length);
                             break;
-                        case SyncTradeType.Pack:
+                        case FileSyncTradeType.Pack:
                             Writer.WithRemoveTemp();
                             Console.WriteLine($"Receive file: 「{Model.FileInfo.FileName}」 from 「{Model.FileInfo.FullPath}」");
                             SuccessCount++;
                             break;
-                        case SyncTradeType.Complete:
+                        case FileSyncTradeType.Complete:
                             IsTrying = false;
                             break;
                     }
@@ -172,14 +172,14 @@ namespace Rugal.FileSync.Service
 
             Writer.Dispose();
 
-            var Result = new SyncTradeResultModel()
+            var Result = new FileSyncTradeResultModel()
             {
                 ReceiveCount = SuccessCount,
                 ReceiveCheckCount = FileCount,
             };
             return Result;
         }
-        private static async Task TradeInfo(LocalFileWriter Writer, SyncTradeModel Model, IAsyncStreamWriter<Any> StreamWriter)
+        private static async Task TradeInfo(LocalFileWriter Writer, FileSyncTradeModel Model, IAsyncStreamWriter<Any> StreamWriter)
         {
             Writer.WithFile(Model.FileInfo);
 
@@ -187,13 +187,13 @@ namespace Rugal.FileSync.Service
             if (IsTemp)
                 Writer.WithTemp();
 
-            await StreamWriter.WriteAsync(new SyncTradeModel()
+            await StreamWriter.WriteAsync(new FileSyncTradeModel()
             {
-                TradeType = IsTemp ? SyncTradeType.HasTemp : SyncTradeType.Info,
+                TradeType = IsTemp ? FileSyncTradeType.HasTemp : FileSyncTradeType.Info,
                 Length = Writer.Length,
             }.ConvertToAny());
         }
-        public async Task<bool> TryWriteTrade(IAsyncStreamWriter<Any> StreamWriter, SyncTradeModel TradeModel)
+        public async Task<bool> TryWriteTrade(IAsyncStreamWriter<Any> StreamWriter, FileSyncTradeModel TradeModel)
         {
             try
             {

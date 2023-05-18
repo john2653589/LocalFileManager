@@ -28,7 +28,7 @@ namespace Rugal.FileSync.Grpc
             var ReceiveResult = await SyncTradeService.TryReceive(responseStream, requestStream);
             var SendResult = await SyncTradeService.TrySend(responseStream, requestStream);
 
-            var Result = new SyncTradeResultModel()
+            var Result = new FileSyncTradeResultModel()
             {
                 SendCount = SendResult.SendCount,
                 SendCheckCount = SendResult.SendCheckCount,

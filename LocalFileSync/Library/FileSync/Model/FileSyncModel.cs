@@ -2,21 +2,21 @@
 
 namespace Rugal.FileSync.Model
 {
-    public class SyncTradeModel
+    public class FileSyncTradeModel
     {
-        public SyncTradeType TradeType { get; set; }
+        public FileSyncTradeType TradeType { get; set; }
         public LocalFileInfoModel FileInfo { get; set; }
         public long Length { get; set; }
         public byte[] Buffer { get; set; }
     }
-    public class SyncTradeResultModel
+    public class FileSyncTradeResultModel
     {
         public int SendCount { get; set; }
         public int SendCheckCount { get; set; }
         public int ReceiveCount { get; set; }
         public int ReceiveCheckCount { get; set; }
     }
-    public enum SyncTradeType
+    public enum FileSyncTradeType
     {
         Info = 0,
         HasTemp = 1,
