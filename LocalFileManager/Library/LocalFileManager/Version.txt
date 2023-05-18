@@ -1,5 +1,5 @@
 ﻿LocalFileManager Library
-Version 1.0.2
+Version 1.0.3
 From Rugal Tu
 
-Update 2023/05/18
+Update 2023/05/19

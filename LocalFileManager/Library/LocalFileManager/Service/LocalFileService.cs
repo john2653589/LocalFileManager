@@ -362,22 +362,16 @@ namespace Rugal.Net.LocalFileManager.Service
         private string LocalSave<TData>(object FileName, byte[] SaveBuffer, params object[] Paths)
         {
             var FullFileName = CombineFullName<TData>(FileName, out var SetFileName, Paths);
-            WriteFile(FullFileName, SaveBuffer);
+            BaseWriteFile(FullFileName, SaveBuffer);
             return SetFileName;
         }
         private string LocalSave(object FileName, byte[] SaveBuffer, params object[] Paths)
         {
             var FullFileName = CombineFullName(FileName, out var SetFileName, Paths);
-            WriteFile(FullFileName, SaveBuffer);
+            BaseWriteFile(FullFileName, SaveBuffer);
             return SetFileName;
         }
-        private string BaseLocalSave(object FileName, byte[] SaveBuffer, params object[] Paths)
-        {
-            var FullFileName = CombineFullName(FileName, out var SetFileName, Paths);
-            WriteFile(FullFileName, SaveBuffer);
-            return SetFileName;
-        }
-        private static void WriteFile(string FullFileName, byte[] WriteBuffer)
+        private static void BaseWriteFile(string FullFileName, byte[] WriteBuffer)
         {
             var Info = new FileInfo(FullFileName);
             if (!Info.Directory.Exists)
@@ -385,7 +379,6 @@ namespace Rugal.Net.LocalFileManager.Service
 
             File.WriteAllBytes(FullFileName, WriteBuffer);
         }
-
         #endregion
     }
 }
