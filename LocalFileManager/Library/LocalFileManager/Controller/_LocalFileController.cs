@@ -78,7 +78,7 @@ namespace Rugal.Net.LocalFileManager.Controller
                 var ApiRet = GetFileClient.GetAsync(GetFileUrl).Result;
                 var ApiBuffer = ApiRet.Content.ReadFromJsonAsync<GetFileModel>().Result;
                 var Buffer = ApiBuffer.Buffer;
-                LocalFileService.SaveFile(File.Path, File.FileName, Buffer);
+                LocalFileService.SaveFile(File.FileName, Buffer, File.Path);
             });
 
             return true;
@@ -112,7 +112,7 @@ namespace Rugal.Net.LocalFileManager.Controller
             using var Ms = new MemoryStream();
             File.CopyTo(Ms);
             var SaveBuffer = Ms.ToArray();
-            var GetFileName = LocalFileService.SaveFile(Path, FileName, SaveBuffer);
+            var GetFileName = LocalFileService.SaveFile(FileName, SaveBuffer, Path);
             return GetFileName;
         }
 

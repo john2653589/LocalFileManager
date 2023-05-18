@@ -27,21 +27,23 @@ namespace Rugal.Net.LocalFileManager.Service
             return this;
         }
 
-        public virtual string SaveFile<TData>(object FileName, byte[] SaveBuffer)
-            => LocalSave<TData>(FileName, SaveBuffer);
-        public virtual string SaveFile(string DirectoryName, object FileName, byte[] SaveBuffer)
-            => LocalSave(DirectoryName, FileName, SaveBuffer);
+        public virtual string SaveFile<TData>(object FileName, byte[] SaveBuffer, params object[] Paths)
+           => LocalSave<TData>(FileName, SaveBuffer, Paths);
+        public virtual string SaveFile(object FileName, byte[] SaveBuffer, params object[] Paths)
+            => LocalSave(FileName, SaveBuffer, Paths);
         #endregion
 
         #region File Read
-        public virtual byte[] ReadFile<TData>(object FileName)
+        public virtual byte[] ReadFile<TData>(object FileName, params object[] Paths)
         {
-            var FileBuffer = ReadFile(FileName, typeof(TData));
+            var FileBuffer = ReadFile(FileName, typeof(TData), Paths);
             return FileBuffer;
         }
-        public virtual byte[] ReadFile(Type DataType, object FileName)
+        public virtual byte[] ReadFile(Type DataType, object FileName, params object[] Paths)
         {
-            var FileBuffer = ReadFile(FileName, DataType.Name);
+            var FindPaths = Paths.ToList();
+            FindPaths.Insert(0, DataType.Name);
+            var FileBuffer = ReadFile(FileName, FindPaths);
             return FileBuffer;
         }
         public virtual byte[] ReadFile(object FileName, params object[] Paths)
@@ -177,7 +179,7 @@ namespace Rugal.Net.LocalFileManager.Service
         }
         public virtual bool IsFileExists(string DirectoryName, object FileName)
         {
-            var FullFileName = CombineFullName(FileName, out _, DirectoryName);
+            var FullFileName = CombineFullName(FileName, out _, new[] { DirectoryName });
             var IsExists = File.Exists(FullFileName);
             return IsExists;
         }
@@ -213,7 +215,10 @@ namespace Rugal.Net.LocalFileManager.Service
             if (FileName is null)
                 return false;
 
-            var FullFileName = CombineFullName(FileName, out _, DirectoryName);
+            var FullFileName = CombineFullName(FileName, out _, new[] { DirectoryName });
+            if (!File.Exists(FullFileName))
+                return false;
+
             File.Delete(FullFileName);
             var IsDelete = !File.Exists(FullFileName);
             return IsDelete;
@@ -268,7 +273,7 @@ namespace Rugal.Net.LocalFileManager.Service
         }
         internal virtual string ConvertFullName(string DirectoryName, object FileName)
         {
-            var FullFileName = CombineFullName(FileName, out _, DirectoryName);
+            var FullFileName = CombineFullName(FileName, out _, new[] { DirectoryName });
             return FullFileName;
         }
         internal virtual string ConvertFullName(object FileName, params object[] DirectoryNames)
@@ -277,17 +282,19 @@ namespace Rugal.Net.LocalFileManager.Service
             return FullFileName;
         }
 
-        internal virtual string CombineFullName<TData>(object FileName, out string SetFileName)
+        internal virtual string CombineFullName<TData>(object FileName, out string SetFileName, params object[] Paths)
         {
-            var FullFileName = CombineFullName(typeof(TData), FileName, out SetFileName);
+            var FullFileName = CombineFullName(typeof(TData), FileName, out SetFileName, Paths);
             return FullFileName;
         }
-        internal virtual string CombineFullName(Type DataType, object FileName, out string SetFileName)
+        internal virtual string CombineFullName(Type DataType, object FileName, out string SetFileName, params object[] Paths)
         {
-            var FullFileName = CombineFullName(FileName, out SetFileName, DataType.Name);
+            var FindPaths = Paths.ToList();
+            FindPaths.Insert(0, DataType.Name);
+            var FullFileName = CombineFullName(FileName, out SetFileName, FindPaths.ToArray());
             return FullFileName;
         }
-        internal virtual string CombineFullName(object FileName, out string SetFileName, params object[] DirectoryNames)
+        internal virtual string CombineFullName(object FileName, out string SetFileName, object[] DirectoryNames)
         {
             SetFileName = ConvertFileName(FileName);
 
@@ -328,15 +335,15 @@ namespace Rugal.Net.LocalFileManager.Service
         #endregion
 
         #region Private Method
-        private string LocalSave<TData>(object FileName, byte[] SaveBuffer)
+        private string LocalSave<TData>(object FileName, byte[] SaveBuffer, params object[] Paths)
         {
-            var FullFileName = CombineFullName<TData>(FileName, out var SetFileName);
+            var FullFileName = CombineFullName<TData>(FileName, out var SetFileName, Paths);
             WriteFile(FullFileName, SaveBuffer);
             return SetFileName;
         }
-        private string LocalSave(string DirectoryName, object FileName, byte[] SaveBuffer)
+        private string LocalSave(object FileName, byte[] SaveBuffer, params object[] Paths)
         {
-            var FullFileName = CombineFullName(FileName, out var SetFileName, DirectoryName);
+            var FullFileName = CombineFullName(FileName, out var SetFileName, Paths);
             WriteFile(FullFileName, SaveBuffer);
             return SetFileName;
         }
