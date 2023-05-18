@@ -19,8 +19,8 @@ builder.Services.AddCommonInputOptions();
 
 #region Add LocalFile
 builder.Services.AddLocalFile(builder.Configuration);
-builder.Host.AddLocalFileSyncService(builder.Services);
 builder.Services.LocalFileSyncClient();
+builder.Host.AddLocalFileSyncService(builder.Services);
 #endregion
 
 #endregion

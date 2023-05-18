@@ -21,9 +21,12 @@ namespace Rugal.LocalFileSync.Service
             if (Setting.SyncPerMin == null)
                 return;
 
+            if (Setting.SyncWay == SyncWayType.None)
+                return;
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine($"Data sync service run {DateTime.Now:yyyy-MM-dd HH:mm}");
+                Console.WriteLine($"---Data sync service run {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 var Result = Setting.SyncWay switch
                 {
                     SyncWayType.ToServer => await SyncClient.TrySyncToServer(),
@@ -31,18 +34,16 @@ namespace Rugal.LocalFileSync.Service
                     SyncWayType.Trade => await SyncClient.TrySyncTrade(),
                     _ => null
                 };
-
-                Console.WriteLine($"Data sync service finish {DateTime.Now:yyyy-MM-dd HH:mm}");
                 if (Result is null)
-                    Console.WriteLine("Sync result is null");
-                else
-                {
-                    Console.WriteLine("Sync result");
-                    Console.WriteLine($"SendCheckCount : {Result.SendCheckCount}");
-                    Console.WriteLine($"SendCount : {Result.SendCount}");
-                    Console.WriteLine($"ReceiveCheckCount : {Result.ReceiveCheckCount}");
-                    Console.WriteLine($"ReceiveCount : {Result.ReceiveCount}");
-                }
+                    return;
+
+                Console.WriteLine($"---Data sync service finish {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                Console.WriteLine("\n=====Sync Result=====");
+                Console.WriteLine($"SendCheckCount : {Result.SendCheckCount}");
+                Console.WriteLine($"SendCount : {Result.SendCount}");
+                Console.WriteLine($"ReceiveCheckCount : {Result.ReceiveCheckCount}");
+                Console.WriteLine($"ReceiveCount : {Result.ReceiveCount}");
+                Console.WriteLine("=====Sync Result=====\n");
 
                 await Task.Delay(Setting.SyncPerMin.Value, stoppingToken);
             }

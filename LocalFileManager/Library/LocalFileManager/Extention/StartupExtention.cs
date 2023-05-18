@@ -60,7 +60,7 @@ namespace Rugal.Net.LocalFileManager.Extention
         public static IServiceCollection AddLocalFileSetting(this IServiceCollection Services,
             string RootPath, string RemoteDomain, Action<LocalFileManagerSetting, IServiceProvider> SettingFunc)
         {
-            Services.AddScoped((Provider) =>
+            Services.AddSingleton((Provider) =>
             {
                 var Setting = new LocalFileManagerSetting()
                 {
@@ -74,7 +74,7 @@ namespace Rugal.Net.LocalFileManager.Extention
         }
         public static IServiceCollection AddLocalFileSetting(this IServiceCollection Services, LocalFileManagerSetting Setting, Action<LocalFileManagerSetting, IServiceProvider> SettingFunc)
         {
-            Services.AddScoped((Provider) =>
+            Services.AddSingleton((Provider) =>
             {
                 SettingFunc.Invoke(Setting, Provider);
                 return Setting;
@@ -83,7 +83,7 @@ namespace Rugal.Net.LocalFileManager.Extention
         }
         public static IServiceCollection AddLocalFileService(this IServiceCollection Services)
         {
-            Services.AddScoped<LocalFileService>();
+            Services.AddSingleton<LocalFileService>();
             return Services;
         }
 
@@ -91,13 +91,15 @@ namespace Rugal.Net.LocalFileManager.Extention
         {
             var GetSetting = Configuration.GetSection(ConfigurationKey);
             var Spm = GetSetting.GetValue<string>("Spm");
-            var SyncWay = GetSetting.GetValue<string>("SyncWay");
+            var SyncWayString = GetSetting.GetValue<string>("SyncWay");
+            if (!Enum.TryParse<SyncWayType>(SyncWayString, true, out var SyncWay))
+                SyncWay = SyncWayType.None;
             var Setting = new LocalFileManagerSetting()
             {
                 RootPath = GetSetting.GetValue<string>("RootPath"),
                 RemoteDomain = GetSetting.GetValue<string>("RemoteDomain"),
                 SyncPerMin = Spm == null ? null : TimeSpan.FromMinutes(int.Parse(Spm)),
-                SyncWay = Enum.Parse<SyncWayType>(SyncWay, true),
+                SyncWay = SyncWay,
             };
             return Setting;
         }

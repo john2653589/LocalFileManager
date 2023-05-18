@@ -30,14 +30,14 @@ namespace Rugal.LocalFileSync.Extention
 
         public static IServiceCollection AddLocalFileSyncTrade(this IServiceCollection Services)
         {
-            Services.AddScoped<SyncTradeService>();
+            Services.AddSingleton<SyncTradeService>();
             return Services;
         }
         public static IServiceCollection LocalFileSyncClient(this IServiceCollection Services)
         {
             AddLocalFileSyncTrade(Services);
             Services.AddGrpc();
-            Services.AddScoped<LocalFileSyncClient>();
+            Services.AddSingleton<LocalFileSyncClient>();
             return Services;
         }
 

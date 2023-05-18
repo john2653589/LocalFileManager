@@ -88,6 +88,7 @@ namespace Rugal.LocalFileSync.Service
                             TradeType = SyncTradeType.Pack,
                             FileInfo = File,
                         }.ConvertToAny());
+                        Console.WriteLine($"Send file: 「{File.FileName}」 from 「{File.FullPath}」");
 
                         SuccessCount++;
                         IsSyncSuccess = true;
@@ -151,6 +152,7 @@ namespace Rugal.LocalFileSync.Service
                             break;
                         case SyncTradeType.Pack:
                             Writer.WithRemoveTemp();
+                            Console.WriteLine($"Receive file: 「{Model.FileInfo.FileName}」 from 「{Model.FileInfo.FullPath}」");
                             SuccessCount++;
                             break;
                         case SyncTradeType.Complete:

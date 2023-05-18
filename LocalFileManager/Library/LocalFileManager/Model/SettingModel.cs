@@ -11,7 +11,7 @@
         public string RemoteDomain { get; set; }
         public TimeSpan? SyncPerMin { get; set; }
         public long SyncToPerByte { get; set; } = 1024 * 1024;
-        public SyncWayType SyncWay { get; set; }
+        public SyncWayType SyncWay { get; set; } = SyncWayType.None;
         public Dictionary<string, object> Paths { get; set; }
         public void AddPath(string Key, object Path)
         {
@@ -53,6 +53,7 @@
 
     public enum SyncWayType
     {
+        None,
         ToServer,
         FromServer,
         Trade,

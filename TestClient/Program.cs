@@ -19,12 +19,20 @@ builder.Services.AddCommonInputOptions();
 
 #region Add LocalFile
 builder.Services.AddLocalFile(builder.Configuration);
-builder.Host.AddLocalFileSyncService(builder.Services);
 builder.Services.LocalFileSyncClient();
+builder.Host.AddLocalFileSyncService(builder.Services);
 #endregion
 
 #endregion
 var app = builder.Build();
+
+#region Rugal Library
+
+#region Map Sync Server
+app.MapLocalFileSyncServer();
+#endregion
+
+#endregion
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
