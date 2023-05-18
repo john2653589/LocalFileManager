@@ -23,7 +23,26 @@ namespace Rugal.LocalFileSync.Service
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                Console.WriteLine($"Data sync service run {DateTime.Now:yyyy-MM-dd HH:mm}");
+                var Result = Setting.SyncWay switch
+                {
+                    SyncWayType.ToServer => await SyncClient.TrySyncToServer(),
+                    SyncWayType.FromServer => await SyncClient.TrySyncFromServer(),
+                    SyncWayType.Trade => await SyncClient.TrySyncTrade(),
+                    _ => null
+                };
 
+                Console.WriteLine($"Data sync service finish {DateTime.Now:yyyy-MM-dd HH:mm}");
+                if (Result is null)
+                    Console.WriteLine("Sync result is null");
+                else
+                {
+                    Console.WriteLine("Sync result");
+                    Console.WriteLine($"SendCheckCount : {Result.SendCheckCount}");
+                    Console.WriteLine($"SendCount : {Result.SendCount}");
+                    Console.WriteLine($"ReceiveCheckCount : {Result.ReceiveCheckCount}");
+                    Console.WriteLine($"ReceiveCount : {Result.ReceiveCount}");
+                }
 
                 await Task.Delay(Setting.SyncPerMin.Value, stoppingToken);
             }
