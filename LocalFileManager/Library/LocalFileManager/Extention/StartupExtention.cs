@@ -91,11 +91,13 @@ namespace Rugal.Net.LocalFileManager.Extention
         {
             var GetSetting = Configuration.GetSection(ConfigurationKey);
             var Spm = GetSetting.GetValue<string>("Spm");
+            var SyncWay = GetSetting.GetValue<string>("SyncWay");
             var Setting = new LocalFileManagerSetting()
             {
                 RootPath = GetSetting.GetValue<string>("RootPath"),
                 RemoteDomain = GetSetting.GetValue<string>("RemoteDomain"),
                 SyncPerMin = Spm == null ? null : TimeSpan.FromMinutes(int.Parse(Spm)),
+                SyncWay = Enum.Parse<SyncWayType>(SyncWay, true),
             };
             return Setting;
         }

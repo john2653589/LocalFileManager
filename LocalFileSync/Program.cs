@@ -27,7 +27,14 @@ builder.Services.LocalFileSyncClient();
 
 var app = builder.Build();
 
+#region Rugal Library
+
+#region Map Sync Server
 app.MapLocalFileSyncServer();
+#endregion
+
+#endregion
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
