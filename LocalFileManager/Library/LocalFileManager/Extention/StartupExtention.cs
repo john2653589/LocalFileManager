@@ -28,26 +28,26 @@ namespace Rugal.Net.LocalFileManager.Extention
             return Services;
         }
 
-        public static IServiceCollection AddLocalFile(this IServiceCollection Services, string RootPath, string RemoteDomain = null)
+        public static IServiceCollection AddLocalFile(this IServiceCollection Services, string RootPath, string RemoteServer = null)
         {
-            AddLocalFileSetting(Services, RootPath, RemoteDomain);
+            AddLocalFileSetting(Services, RootPath, RemoteServer);
             AddLocalFileService(Services);
             return Services;
         }
         public static IServiceCollection AddLocalFile(this IServiceCollection Services,
-            string RootPath, string RemoteDomain, Action<LocalFileManagerSetting, IServiceProvider> SettingFunc)
+            string RootPath, string RemoteServer, Action<LocalFileManagerSetting, IServiceProvider> SettingFunc)
         {
-            AddLocalFileSetting(Services, RootPath, RemoteDomain, SettingFunc);
+            AddLocalFileSetting(Services, RootPath, RemoteServer, SettingFunc);
             AddLocalFileService(Services);
             return Services;
         }
 
-        public static IServiceCollection AddLocalFileSetting(this IServiceCollection Services, string RootPath, string RemoteDomain = null)
+        public static IServiceCollection AddLocalFileSetting(this IServiceCollection Services, string RootPath, string RemoteServer = null)
         {
             var Setting = new LocalFileManagerSetting()
             {
                 RootPath = RootPath,
-                RemoteDomain = RemoteDomain,
+                RemoteServer = RemoteServer,
             };
             Services.AddSingleton(Setting);
             return Services;
@@ -58,14 +58,14 @@ namespace Rugal.Net.LocalFileManager.Extention
             return Services;
         }
         public static IServiceCollection AddLocalFileSetting(this IServiceCollection Services,
-            string RootPath, string RemoteDomain, Action<LocalFileManagerSetting, IServiceProvider> SettingFunc)
+            string RootPath, string RemoteServer, Action<LocalFileManagerSetting, IServiceProvider> SettingFunc)
         {
             Services.AddSingleton((Provider) =>
             {
                 var Setting = new LocalFileManagerSetting()
                 {
                     RootPath = RootPath,
-                    RemoteDomain = RemoteDomain,
+                    RemoteServer = RemoteServer,
                 };
                 SettingFunc?.Invoke(Setting, Provider);
                 return Setting;
@@ -97,7 +97,7 @@ namespace Rugal.Net.LocalFileManager.Extention
             var Setting = new LocalFileManagerSetting()
             {
                 RootPath = GetSetting.GetValue<string>("RootPath"),
-                RemoteDomain = GetSetting.GetValue<string>("RemoteDomain"),
+                RemoteServer = GetSetting.GetValue<string>("RemoteServer"),
                 SyncPerMin = Spm == null ? null : TimeSpan.FromMinutes(int.Parse(Spm)),
                 SyncWay = SyncWay,
             };

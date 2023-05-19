@@ -34,8 +34,8 @@ namespace Rugal.Net.LocalFileManager.Controller
             using var Client = new HttpClient();
             var Setting = LocalFileService.Setting;
 
-            var RemoteDomain = Setting.RemoteDomain.Trim('/');
-            var BaseUrl = $"{RemoteDomain}/api/_LocalFile";
+            var RemoteServer = Setting.RemoteServer.Trim('/');
+            var BaseUrl = $"{RemoteServer}/api/_LocalFile";
             var GetFileListUrl = $"{BaseUrl}/GetFileList";
 
             var RemoteRoot = await Client.GetFromJsonAsync<SyncDirectoryModel>(GetFileListUrl);
@@ -63,8 +63,8 @@ namespace Rugal.Net.LocalFileManager.Controller
         {
             var Setting = LocalFileService.Setting;
 
-            var RemoteDomain = Setting.RemoteDomain.Trim('/');
-            var BaseUrl = $"{RemoteDomain}/api/_LocalFile";
+            var RemoteServer = Setting.RemoteServer.Trim('/');
+            var BaseUrl = $"{RemoteServer}/api/_LocalFile";
             var GetFileListUrl = $"{BaseUrl}/GetFileList";
 
             using var GetModelClient = new HttpClient();

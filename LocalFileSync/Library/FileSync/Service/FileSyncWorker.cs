@@ -14,7 +14,6 @@ namespace Rugal.FileSync.Service
             LocalFileService = _LocalFileService;
             SyncClient = _SyncClient;
         }
-        public FileSyncWorker() { }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             if (Setting.SyncPerMin == null)
@@ -25,7 +24,7 @@ namespace Rugal.FileSync.Service
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine($"---Data sync service run {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                Console.WriteLine($"---File sync service run {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 var Result = Setting.SyncWay switch
                 {
                     SyncWayType.ToServer => await SyncClient.TrySyncToServer(),
@@ -36,7 +35,8 @@ namespace Rugal.FileSync.Service
                 if (Result is null)
                     return;
 
-                Console.WriteLine($"---Data sync service finish {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                Console.WriteLine($"---File sync service finish {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+
                 Console.WriteLine("\n=====Sync Result=====");
                 Console.WriteLine($"SendCheckCount : {Result.SendCheckCount}");
                 Console.WriteLine($"SendCount : {Result.SendCount}");

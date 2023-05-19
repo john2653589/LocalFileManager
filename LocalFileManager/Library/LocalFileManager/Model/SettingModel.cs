@@ -8,7 +8,7 @@
             get => GetRootPath();
             set => FormatRootPath = value;
         }
-        public string RemoteDomain { get; set; }
+        public string RemoteServer { get; set; }
         public TimeSpan? SyncPerMin { get; set; }
         public long SyncToPerByte { get; set; } = 1024 * 1024;
         public SyncWayType SyncWay { get; set; } = SyncWayType.None;

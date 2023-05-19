@@ -25,6 +25,8 @@ namespace Rugal.FileSync.Grpc
 
         public override async Task SyncTrade(IAsyncStreamReader<Any> requestStream, IServerStreamWriter<Any> responseStream, ServerCallContext context)
         {
+            Console.WriteLine($"---File sync service run {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+
             var ReceiveResult = await SyncTradeService.TryReceive(responseStream, requestStream);
             var SendResult = await SyncTradeService.TrySend(responseStream, requestStream);
 
@@ -36,7 +38,8 @@ namespace Rugal.FileSync.Grpc
                 ReceiveCheckCount = ReceiveResult.ReceiveCheckCount,
             };
 
-            Console.WriteLine($"Data sync service finish {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            Console.WriteLine($"---File sync service finish {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+
             Console.WriteLine("\n=====Sync Result=====");
             Console.WriteLine($"SendCheckCount : {Result.SendCheckCount}");
             Console.WriteLine($"SendCount : {Result.SendCount}");

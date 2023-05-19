@@ -20,7 +20,7 @@ namespace Rugal.FileSync.Grpc
         }
         public void CreateClient()
         {
-            var GetChannel = GrpcChannel.ForAddress(Setting.RemoteDomain);
+            var GetChannel = GrpcChannel.ForAddress(Setting.RemoteServer);
             Client = new FileSync.FileSyncClient(GetChannel);
         }
 
