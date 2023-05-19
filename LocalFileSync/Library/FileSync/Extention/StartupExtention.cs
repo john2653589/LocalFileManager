@@ -21,10 +21,7 @@ namespace Rugal.FileSync.Extention
             else if (IsLinux)
                 Host.UseSystemd();
 
-            Host.ConfigureServices(Services =>
-            {
-                Services.AddHostedService<FileSyncWorker>();
-            });
+            Services.AddHostedService<FileSyncWorker>();
         }
 
         public static IServiceCollection AddLocalFileSyncTrade(this IServiceCollection Services)
